@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "banderdoc-search"
+version = "0.1.0"
+description = ""
+authors = ["Andrka <lozhnikov.andrei@gmail.com>"]
+packages = [
+ { include = 'app' },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.65.2"
+uvicorn = "^0.14.0"
+elasticsearch = "^7.13.1"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.8.0"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
