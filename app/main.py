@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 
+from typing import List, Optional
+
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 from app.schemas import TextPiece, TextType
 
@@ -31,28 +33,28 @@ app = FastAPI()
 
 @app.post('/text-pieces/')
 def index_text_piece(text_piece: TextPiece):
-    return text_piece.json()
+    return text_piece
 
 
-@app.get('/text-pieces/')
+@app.get('/text-pieces/', response_model=List[TextPiece])
 def get_text_pieces(
-    text: str = None,
-    type: TextType = None,
-    page_number: int = None,
-    document_name: str = None,
+    text: Optional[str] = Query(None),
+    type: Optional[TextType] = Query(None),
+    page_number: Optional[int] = Query(None, gt=0),
+    document_name: Optional[str] = Query(None),
 ):
-    result = list(TEST_TEXT_PIECES)
+    result = TEST_TEXT_PIECES
     if text:
-        result = filter(lambda x: x.text == text, result)
+        result = [x for x in result if x.text == text]
     if type:
-        result = filter(lambda x: x.type == type, result)
+        result = [x for x in result if x.type == type]
     if page_number and document_name:
-        result = filter(
-            (lambda x: x.page_number == page_number
-                and x.document_name == document_name),
-            result,
-            )
-    return list(map(lambda x: x.json(), result))
+        result = [x for x in result if ((
+            x.page_number == page_number
+        ) and (
+            x.document_name == document_name
+        ))]
+    return result
 
 
 if __name__ == '__main__':
